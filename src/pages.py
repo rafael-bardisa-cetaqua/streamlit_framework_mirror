@@ -52,3 +52,4 @@ def delete_pages() -> None:
 def add_pages() -> None:
     for page in list(PAGES_DIR.glob("*.py")):
         add_page(str(page.name)[:-3])
+        
