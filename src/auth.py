@@ -34,7 +34,7 @@ authenticator = stauth.Authenticate(
 )
 
 
-def on_auth(*args: Literal[True, False, None]):
+def on_auth(*args: Literal[True, False, None], chain: bool = False):
     """
     execute function if user's auth state is one of *args. Possible state values are:
     * True: user is authenticated
@@ -46,7 +46,11 @@ def on_auth(*args: Literal[True, False, None]):
         def wrapper(*args, **kwargs):
             if st.session_state.authentication_status in gateways:
                 return func(*args, **kwargs)
-        return wrapper()    # parentheses to execute inner function, thus calling streamlit elements if any
+            
+        if chain:
+            return wrapper      # do not execute the function to chain more decorators
+        else:
+            return wrapper()    # execute inner function, thus calling streamlit elements if any
     return decorator
 
 

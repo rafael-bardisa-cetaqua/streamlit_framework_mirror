@@ -44,7 +44,7 @@ def clear(*args: str):
         del st.session_state[key]
 
 
-def on_state(**kwargs: Any):
+def on_state(*, chain: bool = False, **kwargs: Any):
     """
     executes decorated function if the app state matches the one given in kwargs.
     For example:
@@ -72,5 +72,9 @@ def on_state(**kwargs: Any):
             else:
                 if app_gateway_state == gateways:
                     return func(*args, **kwargs)
-        return wrapper()    # parentheses to execute inner function, thus calling streamlit elements if any
+        
+        if chain:
+            return wrapper      # do not execute the function to chain more decorators
+        else:
+            return wrapper()    # execute inner function, thus calling streamlit elements if any
     return decorator
