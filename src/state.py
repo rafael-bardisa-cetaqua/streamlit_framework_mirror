@@ -56,7 +56,7 @@ def on_state(*, chain: bool = False, **kwargs: Any):
         st.error("Retry limit reached")
         st.stop()
     ```
-    The above code will only execute if the retry_count is 3.
+    In the above code, retry_limit_reached will only execute if the retry_count is 3.
 
     TODO add support for conditional expressions, similar to `@on_state(retry_count < 5)`
     """
@@ -74,7 +74,7 @@ def on_state(*, chain: bool = False, **kwargs: Any):
                     return func(*args, **kwargs)
         
         if chain:
-            return wrapper      # do not execute the function to chain more decorators
+            return wrapper      # do not execute the function, useful for chaining decorators or storing the function for later
         else:
             return wrapper()    # execute inner function, thus calling streamlit elements if any
     return decorator

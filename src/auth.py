@@ -48,7 +48,7 @@ def on_auth(*args: Literal[True, False, None], chain: bool = False):
                 return func(*args, **kwargs)
             
         if chain:
-            return wrapper      # do not execute the function to chain more decorators
+            return wrapper      # do not execute the function, useful for chaining decorators or storing the function for later
         else:
             return wrapper()    # execute inner function, thus calling streamlit elements if any
     return decorator
