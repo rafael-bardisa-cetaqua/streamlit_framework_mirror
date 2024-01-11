@@ -1,8 +1,9 @@
+from typing import Any
 import streamlit as st
 import types
 
 
-def set(**kwargs):
+def set(**kwargs: Any):
     """
     set key, value in streamlit session state. If value is a function, it will be evaluated with the current key value and replace it
     """
@@ -13,14 +14,14 @@ def set(**kwargs):
             st.session_state[key] = value
 
 
-def get(*args):
+def get(*args: str):
     """
     get any number of keys from session state. a dict {key: value} is returned
     """
     return {key: st.session_state[key] for key in args}
 
 
-def init_state(**kwargs):
+def init_state(**kwargs: Any):
     """
     initialize the state of variables in streamlit session state when app is run for the first time
     """
