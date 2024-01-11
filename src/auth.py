@@ -12,17 +12,17 @@ from .logger import logger
 USERS_AUTH_FILE = Path(st.secrets.auth_file).absolute().resolve()
 
 @st.cache_data
-def _load_config():
-    with open(USERS_AUTH_FILE, 'r') as file:
+def _load_config(users_auth_file: Path):
+    with open(users_auth_file, 'r') as file:
         logger.debug(f'Loading config from {USERS_AUTH_FILE}')
         config = yaml.load(file, Loader=yaml.SafeLoader)
     return config
 
-with open(USERS_AUTH_FILE, 'r') as file:
-    config = yaml.load(file, Loader=yaml.SafeLoader)
+config = _load_config(USERS_AUTH_FILE)
 
 def _sync_config():
     with open(USERS_AUTH_FILE, 'w') as file:
+        logger.debug(f'Syncing config changes to {USERS_AUTH_FILE}')
         yaml.dump(config, file, default_flow_style=False)
 
 authenticator = stauth.Authenticate(
@@ -53,7 +53,6 @@ def on_auth(*args: Literal[True, False, None]):
 def login_button(ask_prompt: str = 'Please enter your username and password'):
     # login user
     st.warning(ask_prompt)
-
     authenticator.login('Login')
 
 

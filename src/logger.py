@@ -9,7 +9,7 @@ if logger.level is logging.NOTSET:
 
 if not logger.hasHandlers():
     formatter = logging.Formatter(
-        "\033[95m%(levelname)s\033[0m%(funcName)s %(lineno)s %(message)s"
+        "[\033[95m%(levelname)s\033[0m %(funcName)s %(lineno)s] %(message)s"
     )
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
