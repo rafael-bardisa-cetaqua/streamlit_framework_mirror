@@ -2,6 +2,8 @@ from typing import Any
 import streamlit as st
 import types
 
+from .logger import logger
+
 
 def set(**kwargs: Any):
     """
@@ -27,7 +29,9 @@ def init_state(**kwargs: Any):
     """
     flag = "stutils_init_state"
 
+
     if flag not in st.session_state:
+        logger.debug(f"{kwargs}")
         set(**kwargs)
     st.session_state[flag] = True
     
