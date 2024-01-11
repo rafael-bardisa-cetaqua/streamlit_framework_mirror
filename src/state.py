@@ -63,8 +63,14 @@ def on_state(**kwargs: Any):
     gateways = kwargs
     def decorator(func):
         def wrapper(*args, **kwargs):
-            app_gateway_state = get(gateways.keys())
-            if app_gateway_state == gateways:
-                return func(*args, **kwargs)
+            try:
+                app_gateway_state = get(*gateways.keys())
+                logger.debug(f"{app_gateway_state} | {gateways}")
+            except KeyError:
+                logger.warning(f"not all {gateways.keys()} were found in app state")
+                return
+            else:
+                if app_gateway_state == gateways:
+                    return func(*args, **kwargs)
         return wrapper()    # parentheses to execute inner function, thus calling streamlit elements if any
     return decorator
