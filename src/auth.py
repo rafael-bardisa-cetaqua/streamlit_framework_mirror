@@ -6,8 +6,17 @@ from pathlib import Path
 import streamlit as st
 import streamlit_authenticator as stauth
 
+from .logger import logger
+
 
 USERS_AUTH_FILE = Path(st.secrets.auth_file).absolute().resolve()
+
+@st.cache_data
+def _load_config():
+    with open(USERS_AUTH_FILE, 'r') as file:
+        logger.debug(f'Loading config from {USERS_AUTH_FILE}')
+        config = yaml.load(file, Loader=yaml.SafeLoader)
+    return config
 
 with open(USERS_AUTH_FILE, 'r') as file:
     config = yaml.load(file, Loader=yaml.SafeLoader)

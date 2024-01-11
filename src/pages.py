@@ -7,11 +7,19 @@ from streamlit.source_util import (
     _on_pages_changed
 )
 
+from .logger import logger
+
 
 MAIN_PAGE_NAME = st.secrets.script_name
 MAIN_PAGE_PATH = Path(MAIN_PAGE_NAME).absolute().resolve()
 
-PAGES_DIR = MAIN_PAGE_PATH.parent / "pages"
+@st.cache_data
+def load_pages_dir(main_page_path: Path) -> dict:
+    logger.debug(f"Loading pages from {main_page_path}")
+    return main_page_path.parent / "pages"
+
+
+PAGES_DIR = load_pages_dir(MAIN_PAGE_PATH)
 
 
 def delete_page(page_name: str) -> None:
