@@ -1,1 +1,1 @@
-from .src.auth import on_auth, login_button, register_button
+from .src.auth import on_auth, login_button, logout_button, register_button

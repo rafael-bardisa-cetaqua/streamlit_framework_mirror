@@ -48,6 +48,11 @@ def login_button(ask_prompt: str = 'Please enter your username and password'):
     authenticator.login('Login')
 
 
+def logout_button(logout_prompt: str = 'Logout', location: Literal['main', 'sidebar'] = 'main'):
+    # logout user
+    authenticator.logout(logout_prompt, location)
+
+
 def register_button(register_prompt: str = 'Register user', success_prompt: str = 'User registered successfully'):
     # register new user
     try:
