@@ -29,11 +29,11 @@ def set(**kwargs: Any):
             st.session_state[key] = value
 
 
-def get(*args: str):
+def get(*args: str) -> tuple:
     """
     get any number of keys from session state. a dict {key: value} is returned
     """
-    return {key: st.session_state[key] for key in args}
+    return (st.session_state[key] for key in args)
 
 
 def clear(*args: str):
