@@ -33,7 +33,7 @@ def get(*args: str) -> Tuple[Any, ...]:
     """
     get any number of keys from session state. a dict {key: value} is returned
     """
-    return (st.session_state[key] for key in args)
+    return tuple(st.session_state[key] for key in args)
 
 
 def clear(*args: str) -> None:
@@ -61,16 +61,18 @@ def on_state(*, chain: bool = False, **kwargs: Any) -> Union[Callable, None]:
     TODO add support for conditional expressions, similar to `@on_state(retry_count < 5)`
     """
     gateways = kwargs
+    expected_state = tuple(gateways.values())
     def decorator(func):
         def wrapper(*args, **kwargs):
             try:
                 app_gateway_state = get(*gateways.keys())
-                logger.debug(f"{app_gateway_state} | {gateways}")
+                logger.debug(f"{app_gateway_state} | {expected_state}")
             except KeyError:
                 logger.warning(f"not all {gateways.keys()} were found in app state")
                 return
             else:
-                if app_gateway_state == gateways:
+                logger.debug(f"{app_gateway_state == expected_state}")
+                if app_gateway_state == expected_state:
                     return func(*args, **kwargs)
         
         if chain:
