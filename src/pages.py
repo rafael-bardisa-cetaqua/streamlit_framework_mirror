@@ -14,7 +14,7 @@ MAIN_PAGE_NAME = st.secrets.script_name
 MAIN_PAGE_PATH = Path(MAIN_PAGE_NAME).absolute().resolve()
 
 @st.cache_data
-def load_pages_dir(main_page_path: Path) -> dict:
+def load_pages_dir(main_page_path: Path) -> Path:
     logger.debug(f"Loading pages from {main_page_path.parent / 'pages'}")
     return main_page_path.parent / "pages"
 

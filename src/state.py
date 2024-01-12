@@ -1,11 +1,11 @@
-from typing import Any
+from typing import Any, Callable, Tuple, Union
 import streamlit as st
 import types
 
 from .logger import logger
 
 
-def init_state(**kwargs: Any):
+def init_state(**kwargs: Any) -> None:
     """
     initialize the state of variables in streamlit session state when app is run for the first time
     """
@@ -18,7 +18,7 @@ def init_state(**kwargs: Any):
     st.session_state[flag] = True
     
 
-def set(**kwargs: Any):
+def set(**kwargs: Any) -> None:
     """
     set key, value in streamlit session state. If value is a function, it will be evaluated with the current key value and replace it
     """
@@ -29,14 +29,14 @@ def set(**kwargs: Any):
             st.session_state[key] = value
 
 
-def get(*args: str) -> tuple:
+def get(*args: str) -> Tuple[Any, ...]:
     """
     get any number of keys from session state. a dict {key: value} is returned
     """
     return (st.session_state[key] for key in args)
 
 
-def clear(*args: str):
+def clear(*args: str) -> None:
     """
     clear any number of keys from session state
     """
@@ -44,7 +44,7 @@ def clear(*args: str):
         del st.session_state[key]
 
 
-def on_state(*, chain: bool = False, **kwargs: Any):
+def on_state(*, chain: bool = False, **kwargs: Any) -> Union[Callable, None]:
     """
     executes decorated function if the app state matches the one given in kwargs.
     For example:

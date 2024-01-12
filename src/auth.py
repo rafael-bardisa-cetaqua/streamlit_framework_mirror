@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Callable, Dict, Literal, Union
 
 import yaml
 from pathlib import Path
@@ -12,7 +12,7 @@ from .logger import logger
 USERS_AUTH_FILE = Path(st.secrets.auth_file).absolute().resolve()
 
 @st.cache_data
-def _load_config(users_auth_file: Path):
+def _load_config(users_auth_file: Path) -> Dict[str, Any]:
     with open(users_auth_file, 'r') as file:
         logger.debug(f'Loading config from {USERS_AUTH_FILE}')
         config = yaml.load(file, Loader=yaml.SafeLoader)
@@ -20,7 +20,7 @@ def _load_config(users_auth_file: Path):
 
 config = _load_config(USERS_AUTH_FILE)
 
-def _sync_config():
+def _sync_config() -> None:
     with open(USERS_AUTH_FILE, 'w') as file:
         logger.debug(f'Syncing config changes to {USERS_AUTH_FILE}')
         yaml.dump(config, file, default_flow_style=False)
@@ -34,7 +34,7 @@ authenticator = stauth.Authenticate(
 )
 
 
-def on_auth(*args: Literal[True, False, None], chain: bool = False):
+def on_auth(*args: Literal[True, False, None], chain: bool = False) -> Union[Callable, None]:
     """
     execute function if user's auth state is one of *args. Possible state values are:
     * True: user is authenticated
@@ -54,18 +54,18 @@ def on_auth(*args: Literal[True, False, None], chain: bool = False):
     return decorator
 
 
-def login_button(ask_prompt: str = 'Please enter your username and password'):
+def login_button(ask_prompt: str = 'Please enter your username and password') -> None:
     # login user
     st.warning(ask_prompt)
     authenticator.login('Login')
 
 
-def logout_button(logout_prompt: str = 'Logout', location: Literal['main', 'sidebar'] = 'main'):
+def logout_button(logout_prompt: str = 'Logout', location: Literal['main', 'sidebar'] = 'main') -> None:
     # logout user
     authenticator.logout(logout_prompt, location)
 
 
-def register_button(register_prompt: str = 'Register user', success_prompt: str = 'User registered successfully'):
+def register_button(register_prompt: str = 'Register user', success_prompt: str = 'User registered successfully') -> None:
     # register new user
     try:
         if authenticator.register_user(register_prompt, preauthorization=True):
