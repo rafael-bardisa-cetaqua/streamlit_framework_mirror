@@ -88,7 +88,7 @@ class HTMLElement:
         """
         create a new html element from an incomplete template and arbitrary template arguments
         """
-        return cls._from_str(template.fill(*args, **kwargs))
+        return template.fill(*args, **kwargs)
 
 
 class HTMLTemplate:
