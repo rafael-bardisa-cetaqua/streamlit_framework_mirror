@@ -148,8 +148,9 @@ class HTMLStackParser(HTMLParser):
 
 
     def handle_data(self, data: str) -> None:
-        logger.debug(f"found data: {data}")
-        self.stack[-1] = self.stack[-1].with_content(data)
+        if not data == '\n':
+            logger.debug(f"found data: {data}")
+            self.stack[-1] = self.stack[-1].with_content(data)
 
 
     def handle_endtag(self, tag: str) -> None:
