@@ -91,6 +91,34 @@ class HTMLElement:
         return cls._from_str(template.fill(*args, **kwargs))
 
 
+class HTMLTemplate:
+    """
+    store an unfinished html template
+    """
+    prototype: str
+    def __init__(self, prototype: str) -> None:
+        self.prototype = prototype
+
+
+    @classmethod
+    @st.cache_data(ttl=3600)
+    def load_template(cls, template_path: Union[str, Path]) -> HTMLTemplate:
+        """
+        load the template stored in a given path and return a new HTMLTemplate
+        """
+        with open(template_path, "r") as template_file:
+            result = HTMLTemplate(template_file.read())
+
+        return result
+
+
+    def fill(self, *args: str, **kwargs: str) -> HTMLElement:
+        """
+        fill the template with the given arguments and return a valid html element from it
+        """
+        return HTMLElement._from_str(self.prototype.format(*args, **kwargs))
+
+
 class HTMLStackParser(HTMLParser):
     stack: List[HTMLElement] = []
     element: Union[None, HTMLElement] = None
@@ -131,34 +159,6 @@ class HTMLStackParser(HTMLParser):
             self.element = last_element
         else:
             self.stack[-1].content.append(last_element)
-
-
-class HTMLTemplate:
-    """
-    store an unfinished html template
-    """
-    prototype: str
-    def __init__(self, prototype: str) -> None:
-        self.prototype = prototype
-
-
-    @classmethod
-    @st.cache_data(ttl=3600)
-    def load_template(cls, template_path: Union[str, Path]) -> HTMLTemplate:
-        """
-        load the template stored in a given path and return a new HTMLTemplate
-        """
-        with open(template_path, "r") as template_file:
-            result = HTMLTemplate(template_file.read())
-
-        return result
-
-
-    def fill(self, *args: str, **kwargs: str) -> HTMLElement:
-        """
-        fill the template with the given arguments and return a valid html element from it
-        """
-        return HTMLElement._from_str(self.prototype.format(*args, **kwargs))
     
 
 _parser = HTMLStackParser()

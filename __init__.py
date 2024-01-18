@@ -5,4 +5,4 @@ def set_verbosity(level: int):
     """
     logger.setLevel(level)
 
-__all__ = ["auth", "pages", "state", "style", "set_verbosity"]
+__all__ = ["auth", "pages", "state", "style", "structure", "set_verbosity"]
