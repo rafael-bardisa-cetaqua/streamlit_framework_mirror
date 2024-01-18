@@ -1,9 +1,11 @@
 from __future__ import annotations
 from html.parser import HTMLParser
-from pathlib import Path
-
 from typing import Dict, List, Union
+
+from pathlib import Path
 import streamlit as st
+
+from .logger import logger
 
 
 class HTMLElement:
@@ -11,7 +13,7 @@ class HTMLElement:
     classes: Union[None, List[str]]
     attributes: Union[None, Dict[str, str]]
     id: Union[None, str]
-    content: Union[None, str, HTMLElement]
+    content: Union[None, str, List[HTMLElement]]
 
 
     def __init__(self
@@ -19,7 +21,7 @@ class HTMLElement:
                  , classes: Union[None, List[str]] = None
                  , attributes: Union[None, Dict[str, str]] = None
                  , id: Union[None, str] = None
-                 , content: Union[None, str, HTMLElement, List[HTMLElement]] = None
+                 , content: Union[None, str, List[HTMLElement]] = None
                  ) -> None:
         self.element = element_type
         self.classes = classes
@@ -38,11 +40,8 @@ class HTMLElement:
             attributes = f' {" ".join(attribute_list)}'
         else:
             attributes = f''
-
         if not self.content:
             content = ''
-        elif type(self.content) == HTMLElement:
-            content = self.content
         else:
             content = ''.join(str(element) for element in self.content)
 
@@ -70,7 +69,7 @@ class HTMLElement:
         return self
     
 
-    def with_content(self, content: Union[str, HTMLElement, List[HTMLElement]]) -> HTMLElement:
+    def with_content(self, content: Union[str, List[HTMLElement]]) -> HTMLElement:
         self.content = content
         return self
     
@@ -80,7 +79,16 @@ class HTMLElement:
         """
         given a valid html string, parse it into an HTMLElement
         """
-        raise NotImplementedError
+        _parser.feed(string)
+        return _parser.element
+    
+
+    @classmethod
+    def from_template(cls, template: HTMLTemplate, *args, **kwargs) -> HTMLElement:
+        """
+        create a new html element from an incomplete template and arbitrary template arguments
+        """
+        return cls._from_str(template.fill(*args, **kwargs))
 
 
 class HTMLStackParser(HTMLParser):
@@ -97,7 +105,9 @@ class HTMLStackParser(HTMLParser):
 
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        new_element = HTMLElement(tag)
+        logger.debug(f"found tag: {tag}")
+        logger.debug(f"attributes found: {attrs}")
+        new_element = HTMLElement(tag, content=[], attributes={})
         for html_tag, value in attrs:
             if html_tag == "class":
                 new_element.classes = [value]
@@ -107,6 +117,20 @@ class HTMLStackParser(HTMLParser):
                 new_element.attributes[html_tag] = value
             
         self.stack.append(new_element)
+
+
+    def handle_data(self, data: str) -> None:
+        logger.debug(f"found data: {data}")
+        self.stack[-1] = self.stack[-1].with_content(data)
+
+
+    def handle_endtag(self, tag: str) -> None:
+        logger.debug(f"found endtag: {tag}")
+        last_element = self.stack.pop()
+        if not self.stack:
+            self.element = last_element
+        else:
+            self.stack[-1].content.append(last_element)
 
 
 class HTMLTemplate:
@@ -135,3 +159,6 @@ class HTMLTemplate:
         fill the template with the given arguments and return a valid html element from it
         """
         return HTMLElement._from_str(self.prototype.format(*args, **kwargs))
+    
+
+_parser = HTMLStackParser()
