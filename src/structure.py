@@ -120,8 +120,8 @@ class HTMLTemplate:
 
 
 class HTMLStackParser(HTMLParser):
-    stack: List[HTMLElement] = []
-    element: Union[None, HTMLElement] = None
+    stack: List[HTMLElement]
+    element: Union[None, HTMLElement]
 
     def __init__(self
                  , *
