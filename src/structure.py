@@ -79,6 +79,7 @@ class HTMLElement:
         """
         given a valid html string, parse it into an HTMLElement
         """
+        logger.debug(f"creating HTML element from string: \033[92m{string}\033[0m")
         _parser.feed(string)
         return _parser.element
     
