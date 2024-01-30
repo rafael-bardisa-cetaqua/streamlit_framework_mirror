@@ -29,7 +29,7 @@ def set(**kwargs: Any) -> None:
             st.session_state[key] = value
 
 
-def get(*args: str) -> Tuple[Any, ...]:
+def get(*args: str) -> Union[Any, Tuple[Any, ...]]:
     """
     get any number of keys from session state. a dict {key: value} is returned
     """
