@@ -5,17 +5,18 @@ import types
 from .logger import logger
 
 
-def init_state(**kwargs: Any) -> None:
+def init_state(page_name=None, /, **kwargs: Any) -> None:
     """
     initialize the state of variables in streamlit session state when app is run for the first time
     """
     flag = "stutils_init_state"
-
-
     if flag not in st.session_state:
+        st.session_state[flag] = []
+
+    if page_name not in st.session_state[flag]:
         logger.debug(f"{kwargs}")
         set(**kwargs)
-    st.session_state[flag] = True
+        st.session_state[flag].append(page_name)
     
 
 def set(**kwargs: Any) -> None:
