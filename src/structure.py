@@ -69,8 +69,11 @@ class HTMLElement:
         return self
     
 
-    def with_content(self, content: Union[str, List[HTMLElement]]) -> HTMLElement:
-        self.content = content
+    def with_content(self, content: Union[str, List[HTMLElement], HTMLElement]) -> HTMLElement:
+        if type(content) == HTMLElement:
+            self.content = [content]
+        else:
+            self.content = content
         return self
     
 
@@ -79,6 +82,7 @@ class HTMLElement:
         """
         given a valid html string, parse it into an HTMLElement
         """
+        logger.debug(f"creating HTML element from string: \033[92m{string}\033[0m")
         _parser.feed(string)
         return _parser.element
     
