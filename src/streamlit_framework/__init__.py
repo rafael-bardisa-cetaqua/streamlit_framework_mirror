@@ -5,4 +5,6 @@ def set_verbosity(level: int):
     """
     logger.setLevel(level)
 
+__version__ = "0.1.0"
+
 __all__ = ["auth", "pages", "state", "style", "structure", "set_verbosity"]
