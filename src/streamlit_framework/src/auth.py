@@ -11,7 +11,6 @@ from .logger import logger
 
 USERS_AUTH_FILE = Path(st.secrets.auth_file).absolute().resolve()
 
-@st.cache_data
 def _load_config(users_auth_file: Path) -> Dict[str, Any]:
     with open(users_auth_file, 'r') as file:
         logger.debug(f'Loading config from {USERS_AUTH_FILE}')
